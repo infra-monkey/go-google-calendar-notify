@@ -1,0 +1,111 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: Google Calendar Event Notification API Server
+paths:
+  /api/status:
+    get:
+      responses:
+        '200':
+          description: Status of the API Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+  /api/accounts:
+    get:
+      responses:
+        '200':
+          desciption: List of configured accounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accounts'
+    post:
+      description: Create an Google account for calendar notification
+      security:
+        - OAuth:
+          - write_pets
+          - read_pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleAccount'
+      responses:
+        '200':
+          description: Successfully created a new Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:   
+                  message:
+                    type: string
+
+components:
+  schemas:
+    # base types
+    Status:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          example: OK
+        accounts:
+          type: integer
+          example: 2
+        calendars:
+          type: integer
+          example: 5
+    Account:
+      type: object
+      required:
+        - email
+        - uuid
+      properties:
+        email:
+          type: string
+        uuid:
+          type: string
+        description:
+          type: string
+    Accounts:
+      type: array
+      items:
+        $ref: '#/components/schemas/Account'
+    GoogleAccount:
+      type: object
+      required:
+        - email
+        - appid
+        - oauthtoken
+      properties:
+        email:
+          type: string
+        description:
+          type: string
+        appid:
+          type: string
+        oauthtoken:
+          type: string
+  securitySchemes:
+    OAuth:
+      type: oauth2
+      description: This API uses OAuth 2 with the authorizationCode grant flow. [More info](https://api.example.com/docs/auth)
+    flows:
+        authorizationCode:
+          authorizationUrl: https://chat.infra-monkey.com/oauth/authorize
+          tokenUrl: https://chat.infra-monkey.com/oauth/access_token
+          scopes:
+            read_pets: read your pets
+            write_pets: modify pets in your account
