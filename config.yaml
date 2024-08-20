@@ -1,6 +1,7 @@
 # yaml-language-server: ...
-package: api
+package: gcal
 generate:
-  std-http-server: true
+  gin-server: true
   models: true
-output: api/generated.go
+  embedded-spec: true
+output: gcal/generated.go

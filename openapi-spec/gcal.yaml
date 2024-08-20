@@ -14,6 +14,9 @@ paths:
                 $ref: '#/components/schemas/Status'
   /api/accounts:
     get:
+      security:
+        - OAuth2:
+          - system_member
       responses:
         '200':
           desciption: List of configured accounts
@@ -24,9 +27,8 @@ paths:
     post:
       description: Create an Google account for calendar notification
       security:
-        - OAuth:
-          - write_pets
-          - read_pets
+        - OAuth2:
+          - system_member
       requestBody:
         required: true
         content:
@@ -99,13 +101,11 @@ components:
         oauthtoken:
           type: string
   securitySchemes:
-    OAuth:
+    OAuth2:
       type: oauth2
-      description: This API uses OAuth 2 with the authorizationCode grant flow. [More info](https://api.example.com/docs/auth)
-    flows:
+      flows:
         authorizationCode:
           authorizationUrl: https://chat.infra-monkey.com/oauth/authorize
           tokenUrl: https://chat.infra-monkey.com/oauth/access_token
           scopes:
-            read_pets: read your pets
-            write_pets: modify pets in your account
+            system_member: Member
